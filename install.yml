@@ -1,0 +1,29 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: install Docker
+    apt:
+      name: docker.io
+      state: present
+      update_cache: true
+
+  - name: install Docker Compose
+    apt:
+      name: docker-compose
+      state: present
+
+  - name: git checkout
+    git:
+      repo: 'https://github.com/mihailag/sf__wordpress_experimental.git'
+      dest: /docker-compose
+
+  - name: copy .env file
+    copy:
+      src: .env
+      dest: /docker-compose
+  
+  - name: deploy Docker Compose stack
+    docker_compose:
+      project_src: /docker-compose
+      files:
+      - docker-compose.yml
